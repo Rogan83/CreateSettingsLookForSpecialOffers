@@ -16,7 +16,7 @@
             <Label Grid.Row="0" Grid.Column="2" Text="Preisgrenze pro Produkt" TextDecorations="Underline" Margin="10,0,0,10" TextColor="Black"/>
             <Label Grid.Row="0" Grid.Column="3" Text="Löschen" TextDecorations="Underline" Margin="10,0,0,10" TextColor="Black"/>
 
-            <ScrollView x:Name="scrollView" Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="300">
+            <ScrollView x:Name="scrollView" Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="200">
                 <ListView x:Name="listView" ItemsSource="{Binding FavoriteProducts}" BackgroundColor="AntiqueWhite">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -42,9 +42,10 @@
                 </ListView>
             </ScrollView>
 
-            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" 
+            <Grid   Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" 
                     RowDefinitions="*,*,*"
                     ColumnDefinitions="200,200,200,*"
+                    BackgroundColor="AntiqueWhite"
                     >
                 <Entry Grid.Row="0" Grid.Column="0" WidthRequest="200" x:Name="productName" Placeholder="Produkt Name"  />
                 <Entry Grid.Row="0" Grid.Column="1" WidthRequest="200" x:Name="priceCapPerKg" Placeholder="Preisgrenze Pro Kg"   />
@@ -56,7 +57,7 @@
                         Source="add.png"
                         Command="{Binding AddFavoriteProduct}"
                         CommandParameter="{Binding Source={x:Reference grid}}"
-                        BackgroundColor="LightYellow"
+                        BackgroundColor="AntiqueWhite"
                         HeightRequest="20"
                         />
             </Grid>

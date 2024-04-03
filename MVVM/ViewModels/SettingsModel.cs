@@ -55,6 +55,11 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 string productName = string.Empty;
                 if (entryProductName != null)
                 {
+                    if (entryProductName.Text == null)
+                    {
+                        await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für den Produktnamen darf nicht leer sein!", "OK");
+                        return;
+                    }    
                     var inputText = entryProductName.Text.ToString();
                     if (inputText != string.Empty)
                         productName = inputText;
@@ -68,9 +73,17 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 decimal priceCapPerKg = 0;
                 if (entryPriceCapPerKg != null)
                 {
-                    if (!decimal.TryParse(entryPriceCapPerKg.Text.ToString(), out priceCapPerKg))
+                    if (entryPriceCapPerKg.Text != null)
                     {
-                        await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Kg!", "OK");
+                        if (!decimal.TryParse(entryPriceCapPerKg.Text.ToString(), out priceCapPerKg))
+                        {
+                            await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Kg!", "OK");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für die Preisgrenze pro Kg darf nicht leer sein!", "OK");
                         return;
                     }
                 }
@@ -83,9 +96,17 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 decimal priceCapPerProduct = 0;
                 if (entryPriceCapPerProduct != null)
                 {
-                    if (!Decimal.TryParse(entryPriceCapPerProduct.Text.ToString(), out priceCapPerProduct))
+                    if (entryPriceCapPerProduct.Text != null)
                     {
-                        await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Produkt!", "OK");
+                        if (!Decimal.TryParse(entryPriceCapPerProduct.Text.ToString(), out priceCapPerProduct))
+                        {
+                            await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Produkt!", "OK");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für die Preisgrenze pro Produkt darf nicht leer sein!", "OK");
                         return;
                     }
                 }
@@ -96,6 +117,8 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 }
 
                 var newFavoriteProduct = new FavoriteProduct(productName, priceCapPerKg, priceCapPerProduct);
+                // Wenn der Produkt Name noch nicht in der Liste vorhanden ist, dann füge ihn zu, wenn doch, dann
+                // Gebe eine Warnung aus, dass das Produkt schon vorhanden ist
                 if (!FavoriteProducts.Any(favoriteProduct => favoriteProduct.Name == newFavoriteProduct.Name))
                 {
                     var listView = elements.FindByName("listView") as ListView;
