@@ -4,79 +4,63 @@
              x:Class="CreateSettingsLookForSpecialOffers.MVVM.Views.Settings"
              xmlns:viewModels="clr-namespace:CreateSettingsLookForSpecialOffers.MVVM.ViewModels"
              Title="Einstellungen">
-    <VerticalStackLayout>
-        
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+    <VerticalStackLayout BackgroundColor="LightYellow">
+        <Grid
+            RowDefinitions="*,*,*,*,*,*,*"
+            ColumnDefinitions ="200,200,200,auto"
+            >
 
-            <Label Grid.Row="0" Grid.Column="0" Text="Produkt" TextDecorations="Underline" Margin="10,0,0,10"/>
-            <Label Grid.Row="0" Grid.Column="1" Text="Preisgrenze pro Kg" Margin="10,0,0,10"/>
-            <Label Grid.Row="0" Grid.Column="2" Text="Preisgrenze pro Produkt" Margin="10,0,0,10"/>
-            <Label Grid.Row="0" Grid.Column="3" Text="Löschen" Margin="10,0,0,10"/>
-            
-            
+            <Label Grid.Row="0" Grid.Column="0" Text="Produkt" TextDecorations="Underline" Margin="10,0,0,10" TextColor="Black"/>
+            <Label Grid.Row="0" Grid.Column="1" Text="Preisgrenze pro Kg" TextDecorations="Underline" Margin="10,0,0,10" TextColor="Black"/>
+            <Label Grid.Row="0" Grid.Column="2" Text="Preisgrenze pro Produkt" TextDecorations="Underline" Margin="10,0,0,10" TextColor="Black"/>
+            <Label Grid.Row="0" Grid.Column="3" Text="Löschen" TextDecorations="Underline" Margin="10,0,0,10" TextColor="Black"/>
 
-            <ListView Grid.Row="1" Grid.ColumnSpan="4" ItemsSource="{Binding Products}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+            <ScrollView Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="300">
+                <ListView ItemsSource="{Binding FavoriteProducts}" BackgroundColor="AntiqueWhite">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid ColumnDefinitions ="200,200,200,auto">
+                                    <Label Grid.Column="0" Text="{Binding Name}" TextColor="Black" Margin="10,0,0,0"/>
+                                    <Label Grid.Column="1" Text="{Binding PriceCapPerKg, StringFormat='{0:C}'}" TextColor="Black" Margin="10,0,0,10" />
+                                    <Label Grid.Column="2" Text="{Binding PriceCapPerProduct, StringFormat='{0:C}'}" TextColor="Black" Margin="10,0,0,10" />
+                                    <ImageButton  
+                                        Grid.Column="3"
+                                        Margin="10,0,10,10"
+                                        Source="delete.png" 
+                                        HeightRequest="20" 
+                                        HorizontalOptions="Start"
+                                        BackgroundColor="AntiqueWhite"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:SettingsModel}},Path=DeleteFavoriteProduct}" 
+                                        CommandParameter="{Binding }"
+                                        />
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollView>
 
-                                <Label Grid.Column="0" Text="{Binding Name}" TextColor="Black" Margin="10,0,0,0"/>
-                                <Label Grid.Column="1" Text="{Binding PriceCapPerKg, StringFormat='{0:C}'}" TextColor="Black" Margin="10,0,0,10" />
-                                <Label Grid.Column="2" Text="{Binding PriceCapPerProduct, StringFormat='{0:C}'}" TextColor="Black" Margin="10,0,0,10" />
-                                <ImageButton  
-                                    Grid.Column="3"
-                                    Margin="10,0,10,10"
-                                    Source="delete.png" 
-                                    HeightRequest="20" 
-                                    HorizontalOptions="Start"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:SettingsModel}},Path=DeleteFavoriteProduct}" 
-                                    CommandParameter="{Binding .}"      
-                                />
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" x:Name="inputProducts"
+                    RowDefinitions="*,*,*"
+                    ColumnDefinitions="200,200,200,*"
+                    >
+                <Entry Grid.Row="0" Grid.Column="0" WidthRequest="200" x:Name="productName" Placeholder="Produkt Name"  />
+                <Entry Grid.Row="0" Grid.Column="1" WidthRequest="200" x:Name="priceCapPerKg" Placeholder="Preisgrenze Pro Kg"   />
+                <Entry Grid.Row="0" Grid.Column="2" WidthRequest="200"  x:Name="priceCapPerProduct" Placeholder="Preisgrenze Pro Produkt"  />
+                <ImageButton 
+                        Grid.Row="0" 
+                        Grid.Column="3" 
+                        Margin="10"
+                        Source="add.png"
+                        Command="{Binding AddFavoriteProduct}"
+                        CommandParameter="{Binding Source={x:Reference inputProducts}}"
+                        BackgroundColor="LightYellow"
+                        HeightRequest="20"
+                        />
+            </Grid>
 
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <Entry Grid.Row="2" Grid.ColumnSpan="1" WidthRequest="300" HorizontalOptions="Start" Margin="10"/>
-            <Button 
-                Grid.Row="3" 
-                Margin="10"
-                Text="Neues Produkt hinzufügen" 
-                Grid.ColumnSpan="1" 
-                WidthRequest="300" 
-                HorizontalOptions="Start" 
-                Command="{Binding AddFavoriteProduct}"
-                >
-            </Button>
-            
-            <!--<ImageButton Grid.Column="2"  Command="{Binding DeleteFavoriteProduct, Source={x:Reference Name=SettingsModel}}" 
-CommandParameter="{Binding .}" Source="dotnet_bot.png" HeightRequest="20" WidthRequest="20"/>-->
-
-            <!--Command="{Binding DeleteFavoriteProduct, Source={x:Reference Name=SettingsModel}}" CommandParameter="{Binding .}"-->
-
-            
-            
         </Grid>
     </VerticalStackLayout>
 </ContentPage>
+

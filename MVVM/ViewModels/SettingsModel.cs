@@ -13,7 +13,26 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
     [AddINotifyPropertyChangedInterface]
     internal class SettingsModel
     {
-        public ObservableCollection<FavoriteProduct> Products { get; set; } = new ObservableCollection<FavoriteProduct>{
+        public string ProductName { get; set; } = string.Empty;
+
+        private decimal _priceCapPerKg;
+        public decimal PriceCapPerKg
+        {
+            get{ return _priceCapPerKg; }
+            set
+            {
+                if (_priceCapPerKg != value)
+                {
+                    if (value == null)
+                        _priceCapPerKg = 0;
+                    else
+                        _priceCapPerKg = value;
+                }
+            }
+        }
+        public decimal PriceCapPerProduct { get; set; } = 0;
+
+        public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = new ObservableCollection<FavoriteProduct>{
             new FavoriteProduct("Speisequark", 2.60m),
             new FavoriteProduct("Thunfisch", 5.08m),
             new FavoriteProduct("Tomate", 2.00m),
@@ -23,17 +42,76 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
             new FavoriteProduct("Hackfleisch", 5.99m)
         };
 
-
         public ICommand AddFavoriteProduct =>
-            new Command(() =>
+            new Command(async(inputProducts) =>
             {
-                Products.Add(new FavoriteProduct("quark", 2.99m));
+                var elements = (Grid)inputProducts;
+                if (elements == null) return;
+
+                var entryProductName = elements.FindByName("productName") as Entry;
+                var entryPriceCapPerKg = elements.FindByName("priceCapPerKg") as Entry;
+                var entryPriceCapPerProduct = elements.FindByName("priceCapPerProduct") as Entry;
+
+                string productName = string.Empty;
+                if (entryProductName != null)
+                {
+                    var inputText = entryProductName.Text.ToString();
+                    if (inputText != string.Empty)
+                        productName = inputText;
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für den Produktnamen darf nicht leer sein!", "OK");
+                        return;
+                    }
+                }
+
+                decimal priceCapPerKg = 0;
+                if (entryPriceCapPerKg != null)
+                {
+                    if (!decimal.TryParse(entryPriceCapPerKg.Text.ToString(), out priceCapPerKg))
+                    {
+                        await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Kg!", "OK");
+                        return;
+                    }
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für die Preisgrenze pro Kg darf nicht leer sein!", "OK");
+                    return;
+                }
+
+                decimal priceCapPerProduct = 0;
+                if (entryPriceCapPerProduct != null)
+                {
+                    if (!Decimal.TryParse(entryPriceCapPerProduct.Text.ToString(), out priceCapPerProduct))
+                    {
+                        await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Produkt!", "OK");
+                        return;
+                    }
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für die Preisgrenze pro Produkt darf nicht leer sein!", "OK");
+                    return;
+                }
+
+                var newFavoriteProduct = new FavoriteProduct(productName, priceCapPerKg, priceCapPerProduct);
+                if (!FavoriteProducts.Any(favoriteProduct => favoriteProduct.Name == newFavoriteProduct.Name))
+                    FavoriteProducts.Add(newFavoriteProduct);
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Dieses Produkt ist schon in der Liste enthalten.", "OK");
+                    return;
+                }
+
+                //if (ProductName != string.Empty && (PriceCapPerKg != 0 || PriceCapPerProduct != 0))
+                //    Products.Add(new FavoriteProduct(ProductName, PriceCapPerKg, PriceCapPerProduct));
             });
 
         public ICommand DeleteAllFavoriteProducts =>
             new Command(() =>
             {
-                Products.Clear();
+                FavoriteProducts.Clear();
             });
 
         public ICommand DeleteFavoriteProduct =>
@@ -41,7 +119,7 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
             {
                 FavoriteProduct product = (FavoriteProduct)item;
                 if (product != null)
-                    Products.Remove(product);
+                    FavoriteProducts.Remove(product);
             });
     }
 }
