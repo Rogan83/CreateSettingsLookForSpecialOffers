@@ -43,9 +43,9 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
         };
 
         public ICommand AddFavoriteProduct =>
-            new Command(async(inputProducts) =>
+            new Command(async(grid) =>
             {
-                var elements = (Grid)inputProducts;
+                var elements = (Grid)grid;
                 if (elements == null) return;
 
                 var entryProductName = elements.FindByName("productName") as Entry;
@@ -97,15 +97,22 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
 
                 var newFavoriteProduct = new FavoriteProduct(productName, priceCapPerKg, priceCapPerProduct);
                 if (!FavoriteProducts.Any(favoriteProduct => favoriteProduct.Name == newFavoriteProduct.Name))
+                {
+                    var listView = elements.FindByName("listView") as ListView;
                     FavoriteProducts.Add(newFavoriteProduct);
+
+                    var scrollView = elements.FindByName("scrollView") as ScrollView;
+                    if (scrollView != null)
+                    {
+                        await Task.Delay(100);  // Kurze Verzögerung, damit die UI-Änderungen abgeschlossen werden
+                        await scrollView.ScrollToAsync(listView, ScrollToPosition.End, true);
+                    }
+                }
                 else
                 {
                     await App.Current.MainPage.DisplayAlert("", "Dieses Produkt ist schon in der Liste enthalten.", "OK");
                     return;
                 }
-
-                //if (ProductName != string.Empty && (PriceCapPerKg != 0 || PriceCapPerProduct != 0))
-                //    Products.Add(new FavoriteProduct(ProductName, PriceCapPerKg, PriceCapPerProduct));
             });
 
         public ICommand DeleteAllFavoriteProducts =>

@@ -5,7 +5,8 @@
              xmlns:viewModels="clr-namespace:CreateSettingsLookForSpecialOffers.MVVM.ViewModels"
              Title="Einstellungen">
     <VerticalStackLayout BackgroundColor="LightYellow">
-        <Grid
+        <Grid 
+            x:Name="grid"
             RowDefinitions="*,*,*,*,*,*,*"
             ColumnDefinitions ="200,200,200,auto"
             >
@@ -15,8 +16,8 @@
             <Label Grid.Row="0" Grid.Column="2" Text="Preisgrenze pro Produkt" TextDecorations="Underline" Margin="10,0,0,10" TextColor="Black"/>
             <Label Grid.Row="0" Grid.Column="3" Text="Löschen" TextDecorations="Underline" Margin="10,0,0,10" TextColor="Black"/>
 
-            <ScrollView Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="300">
-                <ListView ItemsSource="{Binding FavoriteProducts}" BackgroundColor="AntiqueWhite">
+            <ScrollView x:Name="scrollView" Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="300">
+                <ListView x:Name="listView" ItemsSource="{Binding FavoriteProducts}" BackgroundColor="AntiqueWhite">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -41,7 +42,7 @@
                 </ListView>
             </ScrollView>
 
-            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" x:Name="inputProducts"
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" 
                     RowDefinitions="*,*,*"
                     ColumnDefinitions="200,200,200,*"
                     >
@@ -54,7 +55,7 @@
                         Margin="10"
                         Source="add.png"
                         Command="{Binding AddFavoriteProduct}"
-                        CommandParameter="{Binding Source={x:Reference inputProducts}}"
+                        CommandParameter="{Binding Source={x:Reference grid}}"
                         BackgroundColor="LightYellow"
                         HeightRequest="20"
                         />
