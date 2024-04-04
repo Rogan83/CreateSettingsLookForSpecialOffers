@@ -31,7 +31,7 @@
                                         Grid.Column="3"
                                         Margin="10"
                                         Source="delete.png" 
-                                        HeightRequest="20" 
+                                        HeightRequest="50" 
                                         HorizontalOptions="Center"
                                         BackgroundColor="AntiqueWhite"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:SettingsModel}},Path=DeleteFavoriteProduct}" 
@@ -60,7 +60,7 @@
                         Command="{Binding AddFavoriteProduct}"
                         CommandParameter="{Binding Source={x:Reference grid}}"
                         BackgroundColor="AntiqueWhite"
-                        HeightRequest="20"
+                        HeightRequest="50"
                         />
             </Grid>
 
@@ -71,15 +71,14 @@
                 >
                 <Label
                     Grid.Column="0"
-                    
                     VerticalOptions="Center"
-                    Margin="10,10,10,10"
+                    Margin="10"
                     Text="E-Mail Adresse:"
                     />
                 <Entry
                     Grid.Column="1"
                     VerticalOptions="Center"
-                    Margin="10,10,10,10"
+                    Margin="10"
                     Placeholder="E-Mail Adresse eingeben"
                     Keyboard="Email"
                     />
@@ -88,45 +87,59 @@
                     Grid.Column="2"
                     Source="info.png" 
                     BackgroundColor="LightYellow"
-                    HeightRequest="20"
-                    AutomationProperties.HelpText="Hier stehen die Informationen, die angezeigt werden sollen."
-                    Command="{Binding ShowPopupCommand}"
-                    CommandParameter="{Binding Source={x:Reference infoLabel}}">
-
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroupList>
-                            <VisualStateGroup x:Name="CommonState">
-                                <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Property="Scale" Value="1" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Hovered">
-                                    <VisualState.Setters>
-                                        <Setter Property="Scale" Value="0.8" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Pressed">
-                                    <VisualState.Setters>
-                                        <Setter Property="Scale" Value="0.8" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateGroupList>
-                    </VisualStateManager.VisualStateGroups>
+                    HeightRequest="50"
+                    Command="{Binding ShowInfo}"
+                    CommandParameter="{Binding Source={x:Reference infoLabelEMail}}">
                 </ImageButton>
 
                 <Label   
                     Grid.Column="3"
                     Margin="10"
-                    x:Name="infoLabel"
+                    x:Name="infoLabelEMail"
                     Text="Damit Sie per E-Mail benachrichtigt werden können, wenn ein oder mehrere Produkte günstig genug sind."
                     LineBreakMode="WordWrap"
                     IsVisible="false"
                     />
             </Grid>
 
+            <Grid
+                Grid.Row="4"
+                Grid.ColumnSpan="4"
+                ColumnDefinitions="2*,2*,*,2*"
+                >
+                <Label
+                    Grid.Column="0"
+                    VerticalOptions="Center"
+                    Margin="10"
+                    Text="Datei Pfad:"
+                    />
+                <Entry
+                    Grid.Column="1"
+                    VerticalOptions="Center"
+                    Margin="10"
+                    Placeholder="E-Mail Adresse eingeben"
+                    Keyboard="Email"
+                    />
 
+                <ImageButton
+                    Grid.Column="2"
+                    Source="info.png" 
+                    BackgroundColor="LightYellow"
+                    HeightRequest="50"
+                    Command="{Binding ShowInfo}"
+                    CommandParameter="{Binding Source={x:Reference infoLabelPath}}"
+                    />
+                
+               <Label   
+                    Grid.Column="3"
+                    Margin="10"
+                    x:Name="infoLabelPath"
+                    Text=   "Hier können Sie den Pfad für die Excel Datei angeben, wo alle Produkte gespeichert werden. 
+                             Wenn kein Pfad angegeben wird, dann wird die Tabelle in dem Pfad gespeichert, wo sich das Programm befindet."
+                    LineBreakMode="WordWrap"
+                    IsVisible="false"
+                />
+            </Grid>
 
 
 

@@ -134,7 +134,7 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     FavoriteProducts.Remove(product);
             });
 
-        public ICommand ShowPopupCommand =>
+        public ICommand ShowInfo =>
             new Command(async (infoLabel) =>
             {
                 var label = (Label)infoLabel;
@@ -146,5 +146,7 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 //await App.Current.MainPage.DisplayAlert("", "Damit Sie benachrichtigt werden können, " +
                 //    "wenn ein Produkt günstig genug ist.", "OK");
             });
+
+        
     }
 }
