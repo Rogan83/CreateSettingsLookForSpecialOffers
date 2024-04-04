@@ -11,7 +11,7 @@
         protected override Window CreateWindow(IActivationState activationState) =>
         new Window(new AppShell())
         {
-            Width = 800,
+            Width = 900,
             //Height = 500,
             X = 100,
             Y = 100

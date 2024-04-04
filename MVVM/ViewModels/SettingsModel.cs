@@ -13,7 +13,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
     [AddINotifyPropertyChangedInterface]
     internal class SettingsModel
     {
-
         public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = new ObservableCollection<FavoriteProduct>{
             new FavoriteProduct("Speisequark", 2.60m),
             new FavoriteProduct("Thunfisch", 5.08m),
@@ -22,6 +21,15 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
             new FavoriteProduct("Buttermilch", 0.99m),
             new FavoriteProduct("Äpfel", 1.99m),
             new FavoriteProduct("Hackfleisch", 5.99m)
+        };
+
+        public ObservableCollection<MarketName> MarketNames { get; set; } = new ObservableCollection<MarketName>
+        {
+            new MarketName("Penny", false),
+            new MarketName("Lidl", false),
+            new MarketName("Aldi", false),
+            new MarketName("Netto", false),
+            new MarketName("Kaufland", false),
         };
 
         public ICommand AddFavoriteProduct =>
@@ -143,8 +151,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 label.IsVisible = true;
                 await Task.Delay(3000);
                 label.IsVisible = false;
-                //await App.Current.MainPage.DisplayAlert("", "Damit Sie benachrichtigt werden können, " +
-                //    "wenn ein Produkt günstig genug ist.", "OK");
             });
 
         

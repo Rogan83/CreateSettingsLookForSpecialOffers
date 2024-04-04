@@ -4,26 +4,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CreateSettingsLookForSpecialOffers.MVVM.Views.Settings"
              xmlns:viewModels="clr-namespace:CreateSettingsLookForSpecialOffers.MVVM.ViewModels"
-             Title="Einstellungen">
+             BackgroundColor="Firebrick"
+             Title="">
     
     <VerticalStackLayout BackgroundColor="LightYellow">
         <Grid 
             x:Name="grid"
             RowDefinitions="*,*,*,*,*,*,*"
-            ColumnDefinitions ="200,200,200,100"
+            ColumnDefinitions ="250,250,250,125"
             >
 
-            <Label Grid.Row="0" Grid.Column="0" Text="Produkt" TextDecorations="Underline" Margin="10" TextColor="Black"/>
-            <Label Grid.Row="0" Grid.Column="1" Text="Preisgrenze pro Kg" TextDecorations="Underline" Margin="10" TextColor="Black"/>
-            <Label Grid.Row="0" Grid.Column="2" Text="Preisgrenze pro Produkt" TextDecorations="Underline" Margin="10" TextColor="Black"/>
-            <Label Grid.Row="0" Grid.Column="3" Text="Löschen" TextDecorations="Underline" HorizontalOptions="Center" Margin="10" TextColor="Black"/>
+            <Label Grid.Row="0" Grid.Column="0" Text="Produkt" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
+            <Label Grid.Row="0" Grid.Column="1" Text="Preisgrenze pro Kg" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
+            <Label Grid.Row="0" Grid.Column="2" Text="Preisgrenze pro Produkt" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
+            <Label Grid.Row="0" Grid.Column="3" Text="Löschen" TextDecorations="Underline" HorizontalOptions="Center" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
 
-            <ScrollView x:Name="scrollView" Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="200">
+            <ScrollView x:Name="scrollView" Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="200" Margin="10,0,0,0">
                 <ListView x:Name="listView" ItemsSource="{Binding FavoriteProducts}" BackgroundColor="AntiqueWhite">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <Grid ColumnDefinitions ="200,200,200,100">
+                                <Grid ColumnDefinitions ="250,250,250,125"
+                                      >
                                     <Label Grid.Column="0" Text="{Binding Name}" TextColor="Black" Margin="10"/>
                                     <Label Grid.Column="1" Text="{Binding PriceCapPerKg, StringFormat='{0:C}'}" TextColor="Black" Margin="10" />
                                     <Label Grid.Column="2" Text="{Binding PriceCapPerProduct, StringFormat='{0:C}'}" TextColor="Black" Margin="10" />
@@ -44,14 +46,17 @@
                 </ListView>
             </ScrollView>
 
-            <Grid   Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" 
+            <Grid   Grid.Row="2" 
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="4" 
+                    Margin="10,0,0,0"
                     RowDefinitions="*,*,*"
-                    ColumnDefinitions="200,200,200,100"
+                    ColumnDefinitions ="250,250,250,125"
                     BackgroundColor="AntiqueWhite"
                     >
-                <Entry Grid.Row="0" Grid.Column="0" WidthRequest="200" x:Name="productName" Placeholder="Produkt Name"  />
-                <Entry Grid.Row="0" Grid.Column="1" WidthRequest="200" x:Name="priceCapPerKg" Placeholder="Preisgrenze Pro Kg" Keyboard="Numeric"  />
-                <Entry Grid.Row="0" Grid.Column="2" WidthRequest="200" x:Name="priceCapPerProduct" Placeholder="Preisgrenze Pro Produkt" Keyboard="Numeric" />
+                <Entry Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" WidthRequest="200" x:Name="productName" Placeholder="Produkt Name"  />
+                <Entry Grid.Row="0" Grid.Column="1" HorizontalOptions="Start" WidthRequest="200" x:Name="priceCapPerKg" Placeholder="Preisgrenze Pro Kg" Keyboard="Numeric"  />
+                <Entry Grid.Row="0" Grid.Column="2" HorizontalOptions="Start" WidthRequest="200" x:Name="priceCapPerProduct" Placeholder="Preisgrenze Pro Produkt" Keyboard="Numeric" />
                 <ImageButton 
                         Grid.Row="0" 
                         Grid.Column="3" 
@@ -72,19 +77,21 @@
                 <Label
                     Grid.Column="0"
                     VerticalOptions="Center"
-                    Margin="10"
+                    Margin="10,20,10,10"
                     Text="E-Mail Adresse:"
                     />
                 <Entry
                     Grid.Column="1"
                     VerticalOptions="Center"
-                    Margin="10"
+                    Margin="10,20,10,10"
                     Placeholder="E-Mail Adresse eingeben"
                     Keyboard="Email"
                     />
                 
                 <ImageButton 
                     Grid.Column="2"
+                    VerticalOptions="Center"
+                    Margin="10,20,10,10"
                     Source="info.png" 
                     BackgroundColor="LightYellow"
                     HeightRequest="50"
@@ -123,6 +130,7 @@
 
                 <ImageButton
                     Grid.Column="2"
+                    VerticalOptions="Center"
                     Source="info.png" 
                     BackgroundColor="LightYellow"
                     HeightRequest="50"
@@ -141,10 +149,35 @@
                 />
             </Grid>
 
+            <StackLayout 
+                Grid.Row="5"
+                Grid.ColumnSpan="4"
+                >
+                <Label
+                    Margin="10"
+                    Text="Märkte auswählen:"
+                    TextColor="DarkBlue"
+                    FontSize="Medium"
+                    />
+                <ListView 
+                    ItemsSource="{Binding MarketNames}"
+                    >
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid
+                                    
+                                    ColumnDefinitions="*,*"
+                                    >
+                                    <CheckBox Grid.Column="1" Margin="10,0,0,0" IsChecked="{Binding IsSelected}" />
+                                    <Label  Grid.Column="0" Margin="10,0,0,0" Text="{Binding Name}" />
+                                </Grid>
 
-
-
-
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
 
         </Grid>
     </VerticalStackLayout>
