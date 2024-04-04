@@ -13,24 +13,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
     [AddINotifyPropertyChangedInterface]
     internal class SettingsModel
     {
-        public string ProductName { get; set; } = string.Empty;
-
-        private decimal _priceCapPerKg;
-        public decimal PriceCapPerKg
-        {
-            get{ return _priceCapPerKg; }
-            set
-            {
-                if (_priceCapPerKg != value)
-                {
-                    if (value == null)
-                        _priceCapPerKg = 0;
-                    else
-                        _priceCapPerKg = value;
-                }
-            }
-        }
-        public decimal PriceCapPerProduct { get; set; } = 0;
 
         public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = new ObservableCollection<FavoriteProduct>{
             new FavoriteProduct("Speisequark", 2.60m),
@@ -150,6 +132,19 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 FavoriteProduct product = (FavoriteProduct)item;
                 if (product != null)
                     FavoriteProducts.Remove(product);
+            });
+
+        public ICommand ShowPopupCommand =>
+            new Command(async (infoLabel) =>
+            {
+                var label = (Label)infoLabel;
+                if (label == null) { return; }
+
+                label.IsVisible = true;
+                await Task.Delay(3000);
+                label.IsVisible = false;
+                //await App.Current.MainPage.DisplayAlert("", "Damit Sie benachrichtigt werden können, " +
+                //    "wenn ein Produkt günstig genug ist.", "OK");
             });
     }
 }
