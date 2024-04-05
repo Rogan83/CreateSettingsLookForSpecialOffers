@@ -13,6 +13,9 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
     [AddINotifyPropertyChangedInterface]
     internal class SettingsModel
     {
+        public string EmailPattern { get; set; } = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+";
+        public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)\.([^<>:""\\\/\|\?\*\s]+)$";
+
         public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = new ObservableCollection<FavoriteProduct>{
             new FavoriteProduct("Speisequark", 2.60m),
             new FavoriteProduct("Thunfisch", 5.08m),
@@ -25,7 +28,7 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
 
         public ObservableCollection<MarketName> MarketNames { get; set; } = new ObservableCollection<MarketName>
         {
-            new MarketName("Penny", false),
+            new MarketName("Penny", true),
             new MarketName("Lidl", false),
             new MarketName("Aldi", false),
             new MarketName("Netto", false),

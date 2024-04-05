@@ -10,8 +10,6 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/CustomStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
-            
         </ResourceDictionary>
     </Application.Resources>
     
