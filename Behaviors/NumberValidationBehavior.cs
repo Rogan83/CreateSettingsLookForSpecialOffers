@@ -55,10 +55,19 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
 
             Entry? entry = sender as Entry;
             if (entry == null) { return; }
-            entry.BackgroundColor = isValid ? Colors.Green : Colors.Red;
-
-            if (entry.Text.Length == 0)
-                entry.BackgroundColor = Colors.White;
+            
+            if (isValid)
+            {
+                VisualStateManager.GoToState(entry, "Valid");
+            }
+            else if (entry.Text.Length == 0)
+            {
+                VisualStateManager.GoToState(entry, "Empty");
+            }
+            else
+            {
+                VisualStateManager.GoToState(entry, "Invalid");
+            }
         }
     }
 }

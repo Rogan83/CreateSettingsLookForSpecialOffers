@@ -7,20 +7,34 @@
              xmlns:viewModels="clr-namespace:CreateSettingsLookForSpecialOffers.MVVM.ViewModels"
              BackgroundColor="Firebrick"
              Title="">
-    
-    <VerticalStackLayout BackgroundColor="LightYellow">
-        <Grid 
+    <ScrollView>
+        <VerticalStackLayout BackgroundColor="LightYellow">
+            <Grid 
             x:Name="grid"
-            RowDefinitions="*,*,*,*,*,*,*"
+            RowDefinitions="*,*,*,*,*,*,*,*"
             ColumnDefinitions ="250,250,250,125"
             >
+            <ImageButton
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                Margin="30,30,0,0"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="info.png" 
+                BackgroundColor="LightYellow"
+                HeightRequest="50"
+                Command="{Binding ShowInfo}"
+                CommandParameter = "{Binding InfoTextProdukte}"
+            />
 
-            <Label Grid.Row="0" Grid.Column="0" Text="Produkt" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
-            <Label Grid.Row="0" Grid.Column="1" Text="Preisgrenze pro Kg" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
-            <Label Grid.Row="0" Grid.Column="2" Text="Preisgrenze pro Produkt" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
-            <Label Grid.Row="0" Grid.Column="3" Text="Löschen" TextDecorations="Underline" HorizontalOptions="Center" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
 
-            <ScrollView x:Name="scrollView" Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="200" Margin="10,0,0,0">
+            <Label Grid.Row="1" Grid.Column="0" Text="Produkt" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
+            <Label Grid.Row="1" Grid.Column="1" Text="Preisgrenze pro Kg" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
+            <Label Grid.Row="1" Grid.Column="2" Text="Preisgrenze pro Produkt" TextDecorations="Underline" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
+            <Label Grid.Row="1" Grid.Column="3" Text="Löschen" TextDecorations="Underline" HorizontalOptions="Center" Margin="20,20,10,10" TextColor="DarkBlue" FontSize="Small"/>
+
+            <ScrollView x:Name="scrollView" Grid.Row="2" Grid.ColumnSpan="4" HeightRequest="200" Margin="10,0,0,0">
                 <ListView x:Name="listView" ItemsSource="{Binding FavoriteProducts}" BackgroundColor="AntiqueWhite">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -47,7 +61,7 @@
                 </ListView>
             </ScrollView>
 
-            <Grid   Grid.Row="2" 
+            <Grid   Grid.Row="3" 
                     Grid.Column="0" 
                     Grid.ColumnSpan="4" 
                     Margin="10,0,0,0"
@@ -55,11 +69,12 @@
                     ColumnDefinitions ="250,250,250,125"
                     BackgroundColor="AntiqueWhite"
                     >
-                <Entry Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" WidthRequest="200" x:Name="productName" Placeholder="Produkt Name"  />
+                <Entry Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" WidthRequest="200" x:Name="productName" Placeholder="Produkt Name" 
+                       HeightRequest="50"/>
                 <Entry Grid.Row="0" Grid.Column="1" HorizontalOptions="Start" WidthRequest="200" x:Name="priceCapPerKg" Placeholder="Preisgrenze Pro Kg"   
-                       behaviors:NumberValidationBehavior.AttachBehavior="true"/>
+                       HeightRequest="50" behaviors:NumberValidationBehavior.AttachBehavior="true"/>
                 <Entry Grid.Row="0" Grid.Column="2" HorizontalOptions="Start" WidthRequest="200" x:Name="priceCapPerProduct" Placeholder="Preisgrenze Pro Produkt" 
-                       behaviors:NumberValidationBehavior.AttachBehavior="true"/>
+                       HeightRequest="50" behaviors:NumberValidationBehavior.AttachBehavior="true"/>
                 <ImageButton 
                         Grid.Row="0" 
                         Grid.Column="3" 
@@ -73,7 +88,7 @@
             </Grid>
 
             <Grid
-                Grid.Row="3"
+                Grid.Row="4"
                 Grid.ColumnSpan="4"
                 ColumnDefinitions="2*,2*,*,2*"
                 >
@@ -89,8 +104,8 @@
                     Margin="10,20,10,10"
                     Placeholder="E-Mail Adresse eingeben"
                     Keyboard="Email"
-                    behaviors:PatternValidationBehavior.AttachBehavior="true" 
-                    behaviors:PatternValidationBehavior.Pattern="{Binding EmailPattern}"
+                    behaviors:EmailPatternValidationBehavior.AttachBehavior="true" 
+                    behaviors:EmailPatternValidationBehavior.Pattern="{Binding EmailPattern}"
                     >
                     
                 </Entry>
@@ -103,21 +118,12 @@
                     BackgroundColor="LightYellow"
                     HeightRequest="50"
                     Command="{Binding ShowInfo}"
-                    CommandParameter="{Binding Source={x:Reference infoLabelEMail}}">
+                    CommandParameter = "{Binding InfoTextEmail}">
                 </ImageButton>
-
-                <Label   
-                    Grid.Column="3"
-                    Margin="10"
-                    x:Name="infoLabelEMail"
-                    Text="Damit Sie per E-Mail benachrichtigt werden können, wenn ein oder mehrere Produkte günstig genug sind."
-                    LineBreakMode="WordWrap"
-                    IsVisible="false"
-                    />
             </Grid>
 
             <Grid
-                Grid.Row="4"
+                Grid.Row="5"
                 Grid.ColumnSpan="4"
                 ColumnDefinitions="2*,2*,*,2*"
                 >
@@ -132,7 +138,8 @@
                     VerticalOptions="Center"
                     Margin="10"
                     Placeholder="Den Pfad eingeben"
-                    
+                    behaviors:PathPatternValidationBehavior.AttachBehavior="true" 
+                    behaviors:PathPatternValidationBehavior.Pattern="{Binding PathPattern}"
                     />
 
                 <ImageButton
@@ -142,22 +149,12 @@
                     BackgroundColor="LightYellow"
                     HeightRequest="50"
                     Command="{Binding ShowInfo}"
-                    CommandParameter="{Binding Source={x:Reference infoLabelPath}}"
+                    CommandParameter = "{Binding InfoTextPfad}"
                     />
-                
-               <Label   
-                    Grid.Column="3"
-                    Margin="10"
-                    x:Name="infoLabelPath"
-                    Text=   "Hier können Sie den Pfad für die Excel Datei angeben, wo alle Produkte gespeichert werden. 
-                             Wenn kein Pfad angegeben wird, dann wird die Tabelle in dem Pfad gespeichert, wo sich das Programm befindet."
-                    LineBreakMode="WordWrap"
-                    IsVisible="false"
-                />
             </Grid>
 
             <StackLayout 
-                Grid.Row="5"
+                Grid.Row="6"
                 Grid.ColumnSpan="4"
                 >
                 <Label
@@ -184,7 +181,17 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </StackLayout>
+
+            <Button
+                Grid.Row="7"
+                Grid.ColumnSpan="4"
+                Margin="20"
+                Text="Programm starten"
+                TextColor="LightBlue"
+                FontSize="Medium"
+                />
         </Grid>
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
 

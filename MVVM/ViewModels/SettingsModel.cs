@@ -16,6 +16,10 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
         public string EmailPattern { get; set; } = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+";
         public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)\.([^<>:""\\\/\|\?\*\s]+)$";
 
+        public string InfoTextPfad { get; set; } = "Hier können Sie den Pfad für die Excel Datei angeben, wo alle Produkte gespeichert werden. Wenn kein Pfad angegeben wird, dann wird die Tabelle in dem Pfad gespeichert, wo sich das Programm befindet.";
+        public string InfoTextEmail { get; set; } = "Damit Sie per E-Mail benachrichtigt werden können, wenn ein oder mehrere Produkte günstig genug sind.";
+        public string InfoTextProdukte { get; set; } = "Die Preisgrenze pro Produkt ist nur dann relevant, wenn der Preis pro Kg vom Programm nicht ermittelt werden konnte (z.B. bei einzelnen Früchten oder Taschentücher).";
+
         public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = new ObservableCollection<FavoriteProduct>{
             new FavoriteProduct("Speisequark", 2.60m),
             new FavoriteProduct("Thunfisch", 5.08m),
@@ -145,17 +149,24 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     FavoriteProducts.Remove(product);
             });
 
-        public ICommand ShowInfo =>
-            new Command(async (infoLabel) =>
-            {
-                var label = (Label)infoLabel;
-                if (label == null) { return; }
+        //public ICommand ShowInfo =>
+        //    new Command(async (infoLabel) =>
+        //    {
+        //        var label = (Label)infoLabel;
+        //        if (label == null) { return; }
 
-                label.IsVisible = true;
-                await Task.Delay(3000);
-                label.IsVisible = false;
+        //        label.IsVisible = true;
+        //        await Task.Delay(3000);
+        //        label.IsVisible = false;
+        //    });
+
+        public ICommand ShowInfo =>
+            new Command(async (infoText) =>
+            {
+                var text = infoText as string;
+                await App.Current.MainPage.DisplayAlert("", text, "OK");
             });
 
-        
+
     }
 }
