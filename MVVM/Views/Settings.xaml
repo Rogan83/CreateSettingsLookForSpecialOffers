@@ -132,8 +132,7 @@
                     VerticalOptions="Center"
                     Margin="10"
                     Placeholder="Den Pfad eingeben"
-                    behaviors:PatternValidationBehavior.AttachBehavior="true" 
-                    behaviors:PatternValidationBehavior.Pattern="{Binding PathPattern}"
+                    
                     />
 
                 <ImageButton
