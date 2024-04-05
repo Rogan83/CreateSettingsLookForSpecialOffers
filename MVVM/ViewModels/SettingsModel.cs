@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,6 +16,7 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
     {
         public string EmailPattern { get; set; } = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+";
         public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)\.([^<>:""\\\/\|\?\*\s]+)$";
+        public string ProduktNamePattern { get; set; } = @"^([a-zA-Z])";
 
         public string InfoTextPfad { get; set; } = "Hier können Sie den Pfad für die Excel Datei angeben, wo alle Produkte gespeichert werden. Wenn kein Pfad angegeben wird, dann wird die Tabelle in dem Pfad gespeichert, wo sich das Programm befindet.";
         public string InfoTextEmail { get; set; } = "Damit Sie per E-Mail benachrichtigt werden können, wenn ein oder mehrere Produkte günstig genug sind.";
@@ -58,8 +60,23 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                         return;
                     }    
                     var inputText = entryProductName.Text.ToString();
+
+                    Regex regex = new Regex(ProduktNamePattern);
+
+                    Match match = regex.Match(inputText);
+
                     if (inputText != string.Empty)
-                        productName = inputText;
+                    {
+                        if (match.Success && inputText.Length >=2)
+                        {
+                            productName = inputText;
+                        }
+                        else
+                        {
+                            await App.Current.MainPage.DisplayAlert("", "Der Produktname muss mit einen Buchstaben anfangen und muss mindestens 2 Zeichen beinhalten.", "OK");
+                            return;
+                        }
+                    }
                     else
                     {
                         await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für den Produktnamen darf nicht leer sein!", "OK");

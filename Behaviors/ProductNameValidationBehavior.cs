@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace CreateSettingsLookForSpecialOffers.Behaviors
 {
-    public static class NumberValidationBehavior
+    public static class ProductNameValidationBehavior
     {
         public static readonly BindableProperty AttachBehaviorProperty =
-        BindableProperty.CreateAttached("AttachBehavior", typeof(bool), typeof(NumberValidationBehavior), false, propertyChanged: OnAttachBehaviorChanged);
+        BindableProperty.CreateAttached("AttachBehavior", typeof(bool), typeof(ProductNameValidationBehavior), false, propertyChanged: OnAttachBehaviorChanged);
+
+        public static readonly BindableProperty PatternProperty =
+        BindableProperty.CreateAttached("Pattern", typeof(string), typeof(EmailPatternValidationBehavior), "", propertyChanged: OnPatternChanged);
+
+        static string namePattern = string.Empty;
 
         public static bool GetAttachBehavior(BindableObject view)
         {
@@ -20,6 +25,16 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
         public static void SetAttachBehavior(BindableObject view, bool value)
         {
             view.SetValue(AttachBehaviorProperty, value);
+        }
+
+        public static string GetPattern(BindableObject view)
+        {
+            return (string)view.GetValue(PatternProperty);
+        }
+
+        public static void SetPattern(BindableObject view, string value)
+        {
+            view.SetValue(PatternProperty, value);
         }
 
         static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
@@ -46,15 +61,30 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
             }
         }
 
+        static void OnPatternChanged(BindableObject view, object oldValue, object newValue)
+        {
+            try
+            {
+                namePattern = (string)newValue;
+            }
+            catch
+            {
+                namePattern = string.Empty;
+            }
+        }
+
         static void OnEntryTextChanged(object sender, TextChangedEventArgs args)
         {
-            double result;
-            bool isValid = double.TryParse(args.NewTextValue, out result);
+            //string pattern = @"^([a-zA-Z])";
+            Regex regex = new Regex(namePattern);
 
             Entry? entry = sender as Entry;
             if (entry == null) { return; }
-            
-            if (isValid)
+
+            Match match = regex.Match(entry.Text);
+
+
+            if (entry.Text.Length >= 2 && match.Success)
             {
                 VisualStateManager.GoToState(entry, "Valid");
             }

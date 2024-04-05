@@ -70,7 +70,8 @@
                     BackgroundColor="AntiqueWhite"
                     >
                 <Entry Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" WidthRequest="200" x:Name="productName" Placeholder="Produkt Name" 
-                       HeightRequest="50"/>
+                       HeightRequest="50" behaviors:ProductNameValidationBehavior.AttachBehavior="true" 
+                       behaviors:ProductNameValidationBehavior.Pattern="{Binding ProduktNamePattern}"/>
                 <Entry Grid.Row="0" Grid.Column="1" HorizontalOptions="Start" WidthRequest="200" x:Name="priceCapPerKg" Placeholder="Preisgrenze Pro Kg"   
                        HeightRequest="50" behaviors:NumberValidationBehavior.AttachBehavior="true"/>
                 <Entry Grid.Row="0" Grid.Column="2" HorizontalOptions="Start" WidthRequest="200" x:Name="priceCapPerProduct" Placeholder="Preisgrenze Pro Produkt" 
