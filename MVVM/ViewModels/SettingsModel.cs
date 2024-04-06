@@ -1,4 +1,6 @@
-﻿using CreateSettingsLookForSpecialOffers.MVVM.Models;
+﻿using CreateSettingsLookForSpecialOffers.Behaviors;
+using CreateSettingsLookForSpecialOffers.Enums;
+using CreateSettingsLookForSpecialOffers.MVVM.Models;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using static Microsoft.Maui.Controls.Behavior;
 
 namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
 {
@@ -32,14 +35,29 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
             new FavoriteProduct("Hackfleisch", 5.99m)
         };
 
-        public ObservableCollection<MarketName> MarketNames { get; set; } = new ObservableCollection<MarketName>
+        ObservableCollection<MarketName> marketNames = [];
+        public ObservableCollection<MarketName> MarketNames
         {
-            new MarketName("Penny", true),
-            new MarketName("Lidl", false),
-            new MarketName("Aldi", false),
-            new MarketName("Netto", false),
-            new MarketName("Kaufland", false),
-        };
+            get { return marketNames; }
+            set 
+            {
+                bool isValid = value.Any(x => x.IsSelected);
+                if (isValid)
+                    marketNames = value; 
+            }
+        }
+
+        public SettingsModel()
+        {
+            MarketNames = new ObservableCollection<MarketName>
+            {
+                new MarketName("Penny", true),
+                new MarketName("Lidl", false),
+                new MarketName("Aldi", false),
+                new MarketName("Netto", false),
+                new MarketName("Kaufland", false),
+            };
+        }
 
         public ICommand AddFavoriteProduct =>
             new Command(async(grid) =>
@@ -61,76 +79,104 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     }    
                     var inputText = entryProductName.Text.ToString();
 
-                    Regex regex = new Regex(ProduktNamePattern);
-
-                    Match match = regex.Match(inputText);
-
-                    if (inputText != string.Empty)
+                    ValidationState? state = ProductNameValidationBehavior.CheckInputValidity(inputText);
+                    if (state == null) { return; }
+                    if (state == ValidationState.Valid)
                     {
-                        if (match.Success && inputText.Length >=2)
-                        {
-                            productName = inputText;
-                        }
-                        else
-                        {
-                            await App.Current.MainPage.DisplayAlert("", "Der Produktname muss mit einen Buchstaben anfangen und muss mindestens 2 Zeichen beinhalten.", "OK");
-                            return;
-                        }
+                        productName = inputText;
                     }
-                    else
+                    else if (state == ValidationState.Empty)
                     {
                         await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für den Produktnamen darf nicht leer sein!", "OK");
                         return;
                     }
+                    else if (state == ValidationState.Invalid)
+                    {
+                        await App.Current.MainPage.DisplayAlert("", "Der Produktname muss mit einen Buchstaben anfangen und muss mindestens 2 Zeichen beinhalten.", "OK");
+                        return;
+                    }
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für den Produktnamen darf nicht leer sein!", "OK");
+                    return;
                 }
 
                 decimal priceCapPerKg = 0;
+                string errorMsgEmptyEntry = "Das Eingabefeld für die Preisgrenze pro Kg darf nicht leer sein!";
                 if (entryPriceCapPerKg != null)
                 {
                     if (entryPriceCapPerKg.Text != null)
                     {
-                        if (!decimal.TryParse(entryPriceCapPerKg.Text.ToString(), out priceCapPerKg))
+                        ValidationState? state = NumberValidationBehavior.CheckInputValidity(entryPriceCapPerKg.Text);
+                        if (state == null) { return; }
+                        if (state == ValidationState.Valid)
+                        {
+                            string value = entryPriceCapPerKg.Text.Replace('.', ',');
+                            priceCapPerKg = decimal.Parse(value);
+                        }
+                        else if (state == ValidationState.Invalid)
                         {
                             await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Kg!", "OK");
                             return;
                         }
-                    }
-                    else
-                    {
-                        await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für die Preisgrenze pro Kg darf nicht leer sein!", "OK");
-                        return;
-                    }
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für die Preisgrenze pro Kg darf nicht leer sein!", "OK");
-                    return;
-                }
-
-                decimal priceCapPerProduct = 0;
-                if (entryPriceCapPerProduct != null)
-                {
-                    if (entryPriceCapPerProduct.Text != null)
-                    {
-                        if (!Decimal.TryParse(entryPriceCapPerProduct.Text.ToString(), out priceCapPerProduct))
+                        else if (state == ValidationState.Empty)
                         {
-                            await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Produkt!", "OK");
+                            await App.Current.MainPage.DisplayAlert("", errorMsgEmptyEntry, "OK");
                             return;
                         }
                     }
                     else
                     {
-                        await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für die Preisgrenze pro Produkt darf nicht leer sein!", "OK");
+                        await App.Current.MainPage.DisplayAlert("", errorMsgEmptyEntry, "OK");
+                        return;
+                    }
+
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("", errorMsgEmptyEntry, "OK");
+                    return;
+                }
+
+                decimal priceCapPerProduct = 0;
+                errorMsgEmptyEntry = "Das Eingabefeld für die Preisgrenze pro Produkt darf nicht leer sein!";
+                if (entryPriceCapPerProduct != null)
+                {
+                    if (entryPriceCapPerProduct.Text != null)
+                    {
+                        ValidationState? state = NumberValidationBehavior.CheckInputValidity(entryPriceCapPerProduct.Text);
+                        if (state == null) { return; }
+                        if (state == ValidationState.Valid)
+                        {
+                            string value = entryPriceCapPerProduct.Text.Replace('.', ',');
+                            priceCapPerProduct = decimal.Parse(value);
+                        }
+                        else if (state == ValidationState.Invalid)
+                        {
+                            await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe im Eingabefeld für die Preisgrenze pro Produkt!", "OK");
+                            return;
+                        }
+                        else if (state == ValidationState.Empty)
+                        {
+                            await App.Current.MainPage.DisplayAlert("", errorMsgEmptyEntry, "OK");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("", errorMsgEmptyEntry, "OK");
                         return;
                     }
                 }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("", "Das Eingabefeld für die Preisgrenze pro Produkt darf nicht leer sein!", "OK");
+                    await App.Current.MainPage.DisplayAlert("", errorMsgEmptyEntry, "OK");
                     return;
                 }
 
                 var newFavoriteProduct = new FavoriteProduct(productName, priceCapPerKg, priceCapPerProduct);
+
                 // Wenn der Produkt Name noch nicht in der Liste vorhanden ist, dann füge ihn zu, wenn doch, dann
                 // Gebe eine Warnung aus, dass das Produkt schon vorhanden ist
                 if (!FavoriteProducts.Any(favoriteProduct => favoriteProduct.Name == newFavoriteProduct.Name))

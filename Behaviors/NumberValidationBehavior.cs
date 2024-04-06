@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CreateSettingsLookForSpecialOffers.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,25 +47,46 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
             }
         }
 
-        static void OnEntryTextChanged(object sender, TextChangedEventArgs args)
+        public static ValidationState? CheckInputValidity(string? input)
         {
-            double result;
-            bool isValid = double.TryParse(args.NewTextValue, out result);
+            if (input == null) { return null; }
 
-            Entry? entry = sender as Entry;
-            if (entry == null) { return; }
-            
+            input = input.Replace('.', ',');
+
+            decimal result = 0;
+            bool isValid = decimal.TryParse(input, out result);
+
             if (isValid)
             {
-                VisualStateManager.GoToState(entry, "Valid");
+                return ValidationState.Valid;
             }
-            else if (entry.Text.Length == 0)
+            else if (input.Length == 0)
             {
-                VisualStateManager.GoToState(entry, "Empty");
+                return ValidationState.Empty;
             }
             else
             {
-                VisualStateManager.GoToState(entry, "Invalid");
+                return ValidationState.Invalid;
+            }
+        }
+
+        static void OnEntryTextChanged(object sender, TextChangedEventArgs args)
+        {
+            Entry? entry = sender as Entry;
+            string? input = args.NewTextValue;
+            ValidationState? state = CheckInputValidity(input);
+            if (state == null) { return; }
+            if (state == ValidationState.Valid)
+            {
+                VisualStateManager.GoToState(entry, state.ToString());
+            }
+            else if (state == ValidationState.Empty)
+            {
+                VisualStateManager.GoToState(entry, state.ToString());
+            }
+            else if (state == ValidationState.Invalid)
+            {
+                VisualStateManager.GoToState(entry, state.ToString());
             }
         }
     }

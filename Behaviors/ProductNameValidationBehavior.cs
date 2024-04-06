@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CreateSettingsLookForSpecialOffers.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -73,28 +74,47 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
             }
         }
 
-        static void OnEntryTextChanged(object sender, TextChangedEventArgs args)
+        public static ValidationState? CheckInputValidity(string? input)
         {
-            //string pattern = @"^([a-zA-Z])";
             Regex regex = new Regex(namePattern);
 
-            Entry? entry = sender as Entry;
-            if (entry == null) { return; }
+            if (input == null) { return null; }
+            Match match = regex.Match(input);
 
-            Match match = regex.Match(entry.Text);
-
-
-            if (entry.Text.Length >= 2 && match.Success)
+            if (input.Length >= 2 && match.Success)
             {
-                VisualStateManager.GoToState(entry, "Valid");
+                // Eingabe gültig
+                return ValidationState.Valid;
             }
-            else if (entry.Text.Length == 0)
+            else if (input.Length == 0)
             {
-                VisualStateManager.GoToState(entry, "Empty");
+                // Eingabe leer
+                return ValidationState.Empty;
             }
             else
             {
-                VisualStateManager.GoToState(entry, "Invalid");
+                // Eingabe ungültig
+                return ValidationState.Invalid;
+            }
+        }
+
+        static void OnEntryTextChanged(object sender, TextChangedEventArgs args)
+        {
+            Entry? entry = sender as Entry;
+            string? input = entry?.Text;
+            ValidationState? state = CheckInputValidity(input);
+            if (state == null) { return; }
+            if (state == ValidationState.Valid)
+            {
+                VisualStateManager.GoToState(entry, state.ToString());
+            }
+            else if (state == ValidationState.Empty)
+            {
+                VisualStateManager.GoToState(entry, state.ToString());
+            }
+            else if (state == ValidationState.Invalid)
+            {
+                VisualStateManager.GoToState(entry, state.ToString());
             }
         }
     }
