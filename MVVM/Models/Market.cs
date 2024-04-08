@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace CreateSettingsLookForSpecialOffers.MVVM.Models
 {
-    [AddINotifyPropertyChangedInterface]
-    public class MarketName
+    public class Market
     {
         public string Name { get; set; }
         public bool IsSelected { get; set; }
 
-        public MarketName(string name, bool isSelected) 
+        public Market(string name, bool isSelected) 
         { 
             Name = name;
             IsSelected = isSelected;

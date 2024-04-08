@@ -10,53 +10,162 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Newtonsoft.Json;
 using static Microsoft.Maui.Controls.Behavior;
+using Newtonsoft.Json.Linq;
+using System.Net.Mail;
 
 namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
     internal class SettingsModel
     {
-        public string EmailPattern { get; set; } = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+";
-        public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)\.([^<>:""\\\/\|\?\*\s]+)$";
+        static string projectPath = AppDomain.CurrentDomain.BaseDirectory;
+
+        static string jsonFilePath = Path.Combine(projectPath, "settings.json");
+
+
+        public string EmailPattern { get; set; } = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+"; 
+        //public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)\.([^<>:""\\\/\|\?\*\s]+)$";
+        public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)$";
         public string ProduktNamePattern { get; set; } = @"^([a-zA-Z])";
 
-        public string InfoTextPfad { get; set; } = "Hier können Sie den Pfad für die Excel Datei angeben, wo alle Produkte gespeichert werden. Wenn kein Pfad angegeben wird, dann wird die Tabelle in dem Pfad gespeichert, wo sich das Programm befindet.";
+        public string InfoTextPfad { get; set; } = "Hier können Sie den Pfad und den Namen für die Excel Datei angeben, wo alle Produkte gespeichert werden (Beispiel: C:\\Users\\Angebote). Wenn kein Pfad angegeben wird, dann wird die Tabelle in dem Pfad gespeichert, wo sich das Programm befindet mit dem Dateinamen \"Angebote\".";
         public string InfoTextEmail { get; set; } = "Damit Sie per E-Mail benachrichtigt werden können, wenn ein oder mehrere Produkte günstig genug sind.";
         public string InfoTextProdukte { get; set; } = "Die Preisgrenze pro Produkt ist nur dann relevant, wenn der Preis pro Kg vom Programm nicht ermittelt werden konnte (z.B. bei einzelnen Früchten oder Taschentücher).";
 
-        public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = new ObservableCollection<FavoriteProduct>{
-            new FavoriteProduct("Speisequark", 2.60m),
-            new FavoriteProduct("Thunfisch", 5.08m),
-            new FavoriteProduct("Tomate", 2.00m),
-            new FavoriteProduct("Orange", 0.99m),
-            new FavoriteProduct("Buttermilch", 0.99m),
-            new FavoriteProduct("Äpfel", 1.99m),
-            new FavoriteProduct("Hackfleisch", 5.99m)
-        };
+        public string Email { get; set; }
+        public string PathName { get; set; }
 
-        ObservableCollection<MarketName> marketNames = [];
-        public ObservableCollection<MarketName> MarketNames
-        {
-            get { return marketNames; }
-            set 
-            {
-                bool isValid = value.Any(x => x.IsSelected);
-                if (isValid)
-                    marketNames = value; 
-            }
-        }
+        public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = [];
+        public ObservableCollection<Market> Markets { get; set; } = [];
+
+        //ObservableCollection<MarketName> marketNames = [];
+
+        //public ObservableCollection<MarketName> MarketNames
+        //{
+        //    get { return marketNames; }
+        //    set 
+        //    {
+        //        bool isValid = value.Any(x => x.IsSelected);
+        //        if (isValid)
+        //            marketNames = value; 
+        //    }
+        //}
+
+        #region newtonsoft Json Examples
+        //Product product = new Product();
+        //product.Name = "Apple";
+        //product.Expiry = new DateTime(2008, 12, 28);
+        //product.Sizes = new string[] { "Small" };
+
+        //string json = JsonConvert.SerializeObject(product);
+        // {
+        //   "Name": "Apple",
+        //   "Expiry": "2008-12-28T00:00:00",
+        //   "Sizes": [
+        //     "Small"
+        //   ]
+        // }
+
+        //string json = @"{
+        //  'Name': 'Bad Boys',
+        //  'ReleaseDate': '1995-4-7T00:00:00',
+        //  'Genres': [
+        //    'Action',
+        //    'Comedy'
+        //  ]
+        //}";
+
+        //Movie m = JsonConvert.DeserializeObject<Movie>(json);
+
+        //string name = m.Name;
+        //// Bad Boys
+
+
+        //JArray array = new JArray();
+        //array.Add("Manual text");
+        //array.Add(new DateTime(2000, 5, 23));
+
+        //JObject o = new JObject();
+        //o["MyArray"] = array;
+
+        //string json = o.ToString();
+        // {
+        //   "MyArray": [
+        //     "Manual text",
+        //     "2000-05-23T00:00:00"
+        //   ]
+        // }
+        #endregion
+
 
         public SettingsModel()
         {
-            MarketNames = new ObservableCollection<MarketName>
+            if (File.Exists(jsonFilePath))
             {
-                new MarketName("Penny", true),
-                new MarketName("Lidl", false),
-                new MarketName("Aldi", false),
-                new MarketName("Netto", false),
-                new MarketName("Kaufland", false),
-            };
+                LoadData();
+            }
+            else
+            {
+                Markets = new ObservableCollection<Market>
+                {
+                    new Market("Penny", true),
+                    new Market("Lidl", false),
+                    new Market("Aldi", false),
+                    new Market("Netto", false),
+                    new Market("Kaufland", false),
+                };
+
+                FavoriteProducts  = new ObservableCollection<FavoriteProduct>
+                {
+                    new FavoriteProduct("Speisequark", 2.60m),
+                    new FavoriteProduct("Thunfisch", 5.08m),
+                    new FavoriteProduct("Tomate", 2.00m),
+                    new FavoriteProduct("Orange", 0.99m),
+                    new FavoriteProduct("Buttermilch", 0.99m),
+                    new FavoriteProduct("Äpfel", 1.99m),
+                    new FavoriteProduct("Hackfleisch", 5.99m)
+                };
+            }
+
+            void LoadData()
+            {
+                string jsonStringFromFile = File.ReadAllText(jsonFilePath);
+
+                JObject data = JObject.Parse(jsonStringFromFile);
+
+                JArray loadedProducts = (JArray)data["FavoriteProducts"];
+                FavoriteProducts.Clear();
+                foreach (JObject loadedProduct in loadedProducts)
+                {
+                    string name = (string)loadedProduct["Name"];
+                    decimal pricePerKg = (decimal)loadedProduct["PriceCapPerKg"];
+                    decimal pricePerProduct = (decimal)loadedProduct["PriceCapPerProduct"];
+
+                    FavoriteProducts.Add(new FavoriteProduct(name, pricePerKg, pricePerProduct));
+                }
+
+                JArray loadedMarkets = (JArray)data["Markets"];
+                foreach (JObject loadedMarket in loadedMarkets)
+                {
+                    string name = (string)loadedMarket["Name"];
+                    bool isSelected = (bool)loadedMarket["IsSelected"];
+
+                    Markets.Add(new Market(name, isSelected));
+                }
+
+                string loadedEmail, loadedPath;
+                if (data["Email"] != null)
+                {
+                    Email = (string)data["Email"];
+                }
+
+                if (data["Path"] != null)
+                {
+                    PathName = ((string)data["Path"]).Replace(".xlsx", "");
+                }
+            }
         }
 
         public ICommand AddFavoriteProduct =>
@@ -230,6 +339,138 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 await App.Current.MainPage.DisplayAlert("", text, "OK");
             });
 
+        public ICommand SaveDataAndStartProgram =>
+            new Command(async(grid) =>
+            {
+                // Email und Datei Pfad von dein Eingabefeldern holen
+                var elements = (Grid)grid;
+                if (elements == null) return;
 
+                Entry? entryEmail = elements.FindByName("email") as Entry;
+                Entry? entryPath = elements.FindByName("path") as Entry;
+
+                string? email = string.Empty, path = string.Empty;
+
+                email = entryEmail?.Text;
+                path = entryPath?.Text;
+
+                
+
+                // email und path auf gültigkeit prüfen
+                ValidationState? state = EmailPatternValidationBehavior.CheckInputValidity(email);
+                if (state == null) { state = ValidationState.Empty; }
+                if (state == ValidationState.Invalid)
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe für die E-Mail Adresse.", "OK");
+                    return;
+                }
+
+                state = PathPatternValidationBehavior.CheckInputValidity(path);
+                if (state == null) { state = ValidationState.Empty; }
+                if (state == ValidationState.Invalid)
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe für den Datei Pfad.", "OK");
+                    return;
+                }
+
+                //Dateiendung hinzufügen
+                if (path != null)
+                    path += ".xlsx";
+
+                //Überprüfen, ob mindestens 1 Markt ausgewählt wurde
+                bool isValid = Markets.Any(x => x.IsSelected);
+                if (!isValid)
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Es muss mindestens 1 Markt ausgewählt werden.", "OK");
+                    return;
+                }
+
+                SaveData(email, path);
+            });
+
+
+
+        void SaveData(string? email, string? path)
+        {
+            if (email == null) { email = string.Empty; }
+            if (path == null) { path = string.Empty; }
+
+            JArray products = new();
+            foreach (var favoriteProduct in FavoriteProducts)
+            {
+                JObject product = new();
+                product["Name"] = favoriteProduct.Name;
+                product["PriceCapPerKg"] = favoriteProduct.PriceCapPerKg;
+                product["PriceCapPerProduct"] = favoriteProduct.PriceCapPerProduct;
+
+                products.Add(product);
+            }
+
+            JArray markets = new();
+            foreach (var Market in Markets)
+            {
+                JObject market = new();
+                market["Name"] = Market.Name;
+                market["IsSelected"] = Market.IsSelected;
+
+                markets.Add(market);
+            }
+
+            JObject root = new JObject();
+            root["FavoriteProducts"] = products;
+            root["Markets"] = markets;
+            root["Email"] = email;
+            root["Path"] = path;
+
+            string json = JsonConvert.SerializeObject(root, Formatting.Indented);
+
+            File.WriteAllText(jsonFilePath, json);
+
+            // Datei LADEN
+
+            //string jsonStringFromFile = File.ReadAllText(jsonFilePath);
+
+            //JObject data = JObject.Parse(jsonStringFromFile);
+
+            //JArray loadedProducts = (JArray)data["FavoriteProducts"];
+            //ObservableCollection<FavoriteProduct> fp = new ObservableCollection<FavoriteProduct>();
+            //foreach (JObject loadedProduct in loadedProducts)
+            //{
+            //    string name = (string)loadedProduct["Name"];
+            //    decimal pricePerKg = (decimal)loadedProduct["PriceCapPerKg"];
+            //    decimal pricePerProduct = (decimal)loadedProduct["PriceCapPerProduct"];
+
+            //    fp.Add(new FavoriteProduct(name, pricePerKg, pricePerProduct));
+            //}
+
+            //JArray loadedMarkets = (JArray)data["Markets"];
+            //ObservableCollection<Market> loadedList = new ObservableCollection<Market>();
+            //foreach (JObject loadedMarket in loadedMarkets)
+            //{
+            //    string name = (string)loadedMarket["Name"];
+            //    bool isSelected = (bool)loadedMarket["IsSelected"];
+
+            //    loadedList.Add(new Market(name, isSelected));
+            //}
+
+            //string loadedEmail, loadedPath;
+            //if (data["Email"] != null)
+            //{
+            //    loadedEmail = (string)data["Email"];
+            //}
+
+            //if (data["Path"] != null)
+            //{
+            //    loadedPath = (string)data["Path"];
+            //}
+
+            ////string e = (string)loadedemail["Email"];
+
+            //var a = 1;
+
+
+        }
+
+        
     }
 }

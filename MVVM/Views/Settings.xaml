@@ -88,18 +88,19 @@
                         />
             </Grid>
 
-            <Grid
+                <Grid
                 Grid.Row="4"
                 Grid.ColumnSpan="4"
                 ColumnDefinitions="2*,2*,*,2*"
                 >
-                <Label
+                    <Label
                     Grid.Column="0"
                     VerticalOptions="Center"
                     Margin="10,20,10,10"
                     Text="E-Mail Adresse:"
                     />
                 <Entry
+                    x:Name="email"
                     Grid.Column="1"
                     VerticalOptions="Center"
                     Margin="10,20,10,10"
@@ -107,6 +108,7 @@
                     Keyboard="Email"
                     behaviors:EmailPatternValidationBehavior.AttachBehavior="true" 
                     behaviors:EmailPatternValidationBehavior.Pattern="{Binding EmailPattern}"
+                    Text="{Binding Email}"
                     >
                     
                 </Entry>
@@ -132,15 +134,17 @@
                     Grid.Column="0"
                     VerticalOptions="Center"
                     Margin="10"
-                    Text="Datei Pfad:"
+                    Text="Datei Pfad - und Name:"
                     />
                 <Entry
+                    x:Name="path"
                     Grid.Column="1"
                     VerticalOptions="Center"
                     Margin="10"
                     Placeholder="Den Pfad eingeben"
                     behaviors:PathPatternValidationBehavior.AttachBehavior="true" 
                     behaviors:PathPatternValidationBehavior.Pattern="{Binding PathPattern}"
+                    Text="{Binding PathName}"
                     />
 
                 <ImageButton
@@ -165,7 +169,7 @@
                     FontSize="Medium"
                     />
                 <ListView 
-                    ItemsSource="{Binding MarketNames}"
+                    ItemsSource="{Binding Markets}"
                     >
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -190,6 +194,8 @@
                 Text="Programm starten"
                 TextColor="LightBlue"
                 FontSize="Medium"
+                Command="{Binding SaveDataAndStartProgram}"
+                CommandParameter="{Binding Source={x:Reference grid}}"
                 />
         </Grid>
     </VerticalStackLayout>
