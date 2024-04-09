@@ -24,18 +24,24 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
 
         static string jsonFilePath = Path.Combine(projectPath, "settings.json");
 
+        static string optionalText = "Optionales Feld.";
+
 
         public string EmailPattern { get; set; } = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+"; 
         //public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)\.([^<>:""\\\/\|\?\*\s]+)$";
         public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)$";
         public string ProduktNamePattern { get; set; } = @"^([a-zA-Z])";
+        public string PostalCodePattern { get; set; } = @"^\d+$";
 
-        public string InfoTextPfad { get; set; } = "Hier können Sie den Pfad und den Namen für die Excel Datei angeben, wo alle Produkte gespeichert werden (Beispiel: C:\\Users\\Angebote). Wenn kein Pfad angegeben wird, dann wird die Tabelle in dem Pfad gespeichert, wo sich das Programm befindet mit dem Dateinamen \"Angebote\".";
-        public string InfoTextEmail { get; set; } = "Damit Sie per E-Mail benachrichtigt werden können, wenn ein oder mehrere Produkte günstig genug sind.";
-        public string InfoTextProdukte { get; set; } = "Die Preisgrenze pro Produkt ist nur dann relevant, wenn der Preis pro Kg vom Programm nicht ermittelt werden konnte (z.B. bei einzelnen Früchten oder Taschentücher).";
+        public string InfoTextProdukte { get; set; } = $"Fügen sie mindestens 1 Produkt hinzu, nachdem gesucht werden soll. Die Preisgrenze pro Produkt ist nur dann relevant, wenn der Preis pro Kg vom Programm nicht ermittelt werden konnte (z.B. bei einzelnen Früchten oder Taschentücher).";
+        public string InfoTextPfad { get; set; } = $"{optionalText} Hier können Sie den Pfad und den Namen für die Excel Datei angeben, wo alle Produkte gespeichert werden (Beispiel: C:\\Users\\Angebote). Wenn kein Pfad angegeben wird, dann wird die Tabelle in dem Pfad gespeichert, wo sich das Programm befindet mit dem Dateinamen \"Angebote\".";
+        public string InfoTextEmail { get; set; } = $"{optionalText} Damit Sie per E-Mail benachrichtigt werden können, wenn ein oder mehrere Produkte günstig genug sind.";
+        public string InfoTextZipCode { get; set; } = $"{optionalText} Geben Sie ihre Postleitzahl an, damit nach Angeboten von ihrer Region gesucht werden können.";
+        public string InfoTextMarkets { get; set; } = $"Wählen sie mindestens einen Markt aus, in welchen die von Ihnen eingetragenen Produkten gesucht werden sollen.";
 
         public string Email { get; set; }
         public string PathName { get; set; }
+        public string ZipCode { get; set; }
 
         public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = [];
         public ObservableCollection<Market> Markets { get; set; } = [];
@@ -117,16 +123,16 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     new Market("Kaufland", false),
                 };
 
-                FavoriteProducts  = new ObservableCollection<FavoriteProduct>
-                {
-                    new FavoriteProduct("Speisequark", 2.60m),
-                    new FavoriteProduct("Thunfisch", 5.08m),
-                    new FavoriteProduct("Tomate", 2.00m),
-                    new FavoriteProduct("Orange", 0.99m),
-                    new FavoriteProduct("Buttermilch", 0.99m),
-                    new FavoriteProduct("Äpfel", 1.99m),
-                    new FavoriteProduct("Hackfleisch", 5.99m)
-                };
+                //FavoriteProducts = new ObservableCollection<FavoriteProduct>
+                //{
+                //    new FavoriteProduct("Speisequark", 2.60m),
+                //    new FavoriteProduct("Thunfisch", 5.08m),
+                //    new FavoriteProduct("Tomate", 2.00m),
+                //    new FavoriteProduct("Orange", 0.99m),
+                //    new FavoriteProduct("Buttermilch", 0.99m),
+                //    new FavoriteProduct("Äpfel", 1.99m),
+                //    new FavoriteProduct("Hackfleisch", 5.99m)
+                //};
             }
 
             void LoadData()
@@ -155,7 +161,7 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     Markets.Add(new Market(name, isSelected));
                 }
 
-                string loadedEmail, loadedPath;
+                string loadedEmail, loadedPath, loadedZipCode;
                 if (data["Email"] != null)
                 {
                     Email = (string)data["Email"];
@@ -164,6 +170,11 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 if (data["Path"] != null)
                 {
                     PathName = ((string)data["Path"]).Replace(".xlsx", "");
+                }
+
+                if (data["ZipCode"] != null)
+                {
+                    ZipCode = (string)data["ZipCode"];
                 }
             }
         }
@@ -348,15 +359,16 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
 
                 Entry? entryEmail = elements.FindByName("email") as Entry;
                 Entry? entryPath = elements.FindByName("path") as Entry;
+                Entry? entryZipCode = elements.FindByName("zipCode") as Entry;
 
-                string? email = string.Empty, path = string.Empty;
+                string? email = string.Empty, path = string.Empty, zipCode = string.Empty;
 
                 email = entryEmail?.Text;
                 path = entryPath?.Text;
-
+                zipCode = entryZipCode?.Text;
                 
 
-                // email und path auf gültigkeit prüfen
+                // email, plz und path auf gültigkeit prüfen
                 ValidationState? state = EmailPatternValidationBehavior.CheckInputValidity(email);
                 if (state == null) { state = ValidationState.Empty; }
                 if (state == ValidationState.Invalid)
@@ -373,7 +385,16 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     return;
                 }
 
-                //Dateiendung hinzufügen
+                state = ZipCodePatternValidationBehavior.CheckInputValidity(zipCode);
+                if (state == null) { state = ValidationState.Empty; }
+                if (state == ValidationState.Invalid)
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Ungültige Eingabe für die Postleitzahl.", "OK");
+                    return;
+                }
+
+
+                //Dateiendung zum Pfad hinzufügen
                 if (path != null)
                     path += ".xlsx";
 
@@ -385,15 +406,23 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     return;
                 }
 
-                SaveData(email, path);
+                // Überprüfe, ob mindestens 1 Produkt hinzugefügt wurde.
+                if (FavoriteProducts.Count == 0)
+                {
+                    await App.Current.MainPage.DisplayAlert("", "Es muss mindestens 1 Produkt Favorite hinzugefügt werden.", "OK");
+                    return;
+                }
+
+                SaveData(email, path, zipCode);
             });
 
 
 
-        void SaveData(string? email, string? path)
+        void SaveData(string? email, string? path, string? zipCode)
         {
             if (email == null) { email = string.Empty; }
             if (path == null) { path = string.Empty; }
+            if (zipCode == null) { zipCode = string.Empty; }
 
             JArray products = new();
             foreach (var favoriteProduct in FavoriteProducts)
@@ -421,6 +450,7 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
             root["Markets"] = markets;
             root["Email"] = email;
             root["Path"] = path;
+            root["ZipCode"] = zipCode;
 
             string json = JsonConvert.SerializeObject(root, Formatting.Indented);
 
