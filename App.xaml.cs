@@ -12,7 +12,7 @@
         new Window(new AppShell())
         {
             Width = 900,
-            //Height = 500,
+            Height = 900,
             X = 100,
             Y = 100
         };
