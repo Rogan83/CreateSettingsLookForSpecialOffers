@@ -61,7 +61,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     new Market("Netto", false),
                     new Market("Kaufland", false),
                 };
-
             }
 
             void LoadData()
