@@ -16,9 +16,6 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
         public static readonly BindableProperty PatternProperty =
         BindableProperty.CreateAttached("Pattern", typeof(string), typeof(EmailPatternValidationBehavior), "", propertyChanged: OnPatternChanged);
 
-        //public static readonly BindableProperty TypeProperty =
-        //BindableProperty.CreateAttached("Type", typeof(string), typeof(PatternValidationBehavior), "", propertyChanged: OnTypeChanged);
-
         static string emailPattern = string.Empty;
         //static string pathpattern = string.Empty;
         //static string type = string.Empty;
@@ -43,17 +40,6 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
         {
             view.SetValue(PatternProperty, value);
         }
-
-
-        //public static string GetType(BindableObject view)
-        //{
-        //    return (string)view.GetValue(TypeProperty);
-        //}
-
-        //public static void SetType(BindableObject view, string value)
-        //{
-        //    view.SetValue(TypeProperty, value);
-        //}
 
         static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
         {
@@ -80,18 +66,6 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
                 entry.TextChanged -= OnEntryTextChanged;
             }
         }
-
-        //static void OnTypeChanged(BindableObject view, object oldValue, object newValue)
-        //{
-        //    try
-        //    {
-        //        type = (string)newValue;
-        //    }
-        //    catch
-        //    {
-        //        type = string.Empty;
-        //    }
-        //}
 
         static void OnPatternChanged(BindableObject view, object oldValue, object newValue)
         {
