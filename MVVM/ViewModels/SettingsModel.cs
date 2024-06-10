@@ -28,7 +28,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
 
 
         public string EmailPattern { get; set; } = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+"; 
-        //public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)\.([^<>:""\\\/\|\?\*\s]+)$";
         public string PathPattern { get; set; } = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)$";
         public string ProduktNamePattern { get; set; } = @"^([a-zA-Z])";
         public string PostalCodePattern { get; set; } = @"^\d+$";
@@ -45,66 +44,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
 
         public ObservableCollection<FavoriteProduct> FavoriteProducts { get; set; } = [];
         public ObservableCollection<Market> Markets { get; set; } = [];
-
-        //ObservableCollection<MarketName> marketNames = [];
-
-        //public ObservableCollection<MarketName> MarketNames
-        //{
-        //    get { return marketNames; }
-        //    set 
-        //    {
-        //        bool isValid = value.Any(x => x.IsSelected);
-        //        if (isValid)
-        //            marketNames = value; 
-        //    }
-        //}
-
-        #region newtonsoft Json Examples
-        //Product product = new Product();
-        //product.Name = "Apple";
-        //product.Expiry = new DateTime(2008, 12, 28);
-        //product.Sizes = new string[] { "Small" };
-
-        //string json = JsonConvert.SerializeObject(product);
-        // {
-        //   "Name": "Apple",
-        //   "Expiry": "2008-12-28T00:00:00",
-        //   "Sizes": [
-        //     "Small"
-        //   ]
-        // }
-
-        //string json = @"{
-        //  'Name': 'Bad Boys',
-        //  'ReleaseDate': '1995-4-7T00:00:00',
-        //  'Genres': [
-        //    'Action',
-        //    'Comedy'
-        //  ]
-        //}";
-
-        //Movie m = JsonConvert.DeserializeObject<Movie>(json);
-
-        //string name = m.Name;
-        //// Bad Boys
-
-
-        //JArray array = new JArray();
-        //array.Add("Manual text");
-        //array.Add(new DateTime(2000, 5, 23));
-
-        //JObject o = new JObject();
-        //o["MyArray"] = array;
-
-        //string json = o.ToString();
-        // {
-        //   "MyArray": [
-        //     "Manual text",
-        //     "2000-05-23T00:00:00"
-        //   ]
-        // }
-        #endregion
-
 
         public SettingsModel()
         {
@@ -123,16 +62,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     new Market("Kaufland", false),
                 };
 
-                //FavoriteProducts = new ObservableCollection<FavoriteProduct>
-                //{
-                //    new FavoriteProduct("Speisequark", 2.60m),
-                //    new FavoriteProduct("Thunfisch", 5.08m),
-                //    new FavoriteProduct("Tomate", 2.00m),
-                //    new FavoriteProduct("Orange", 0.99m),
-                //    new FavoriteProduct("Buttermilch", 0.99m),
-                //    new FavoriteProduct("Äpfel", 1.99m),
-                //    new FavoriteProduct("Hackfleisch", 5.99m)
-                //};
             }
 
             void LoadData()
@@ -332,17 +261,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                     FavoriteProducts.Remove(product);
             });
 
-        //public ICommand ShowInfo =>
-        //    new Command(async (infoLabel) =>
-        //    {
-        //        var label = (Label)infoLabel;
-        //        if (label == null) { return; }
-
-        //        label.IsVisible = true;
-        //        await Task.Delay(3000);
-        //        label.IsVisible = false;
-        //    });
-
         public ICommand ShowInfo =>
             new Command(async (infoText) =>
             {
@@ -416,8 +334,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
                 SaveData(email, path, zipCode);
             });
 
-
-
         void SaveData(string? email, string? path, string? zipCode)
         {
             if (email == null) { email = string.Empty; }
@@ -455,52 +371,6 @@ namespace CreateSettingsLookForSpecialOffers.MVVM.ViewModels
             string json = JsonConvert.SerializeObject(root, Formatting.Indented);
 
             File.WriteAllText(jsonFilePath, json);
-
-            // Datei LADEN
-
-            //string jsonStringFromFile = File.ReadAllText(jsonFilePath);
-
-            //JObject data = JObject.Parse(jsonStringFromFile);
-
-            //JArray loadedProducts = (JArray)data["FavoriteProducts"];
-            //ObservableCollection<FavoriteProduct> fp = new ObservableCollection<FavoriteProduct>();
-            //foreach (JObject loadedProduct in loadedProducts)
-            //{
-            //    string name = (string)loadedProduct["Name"];
-            //    decimal pricePerKg = (decimal)loadedProduct["PriceCapPerKg"];
-            //    decimal pricePerProduct = (decimal)loadedProduct["PriceCapPerProduct"];
-
-            //    fp.Add(new FavoriteProduct(name, pricePerKg, pricePerProduct));
-            //}
-
-            //JArray loadedMarkets = (JArray)data["Markets"];
-            //ObservableCollection<Market> loadedList = new ObservableCollection<Market>();
-            //foreach (JObject loadedMarket in loadedMarkets)
-            //{
-            //    string name = (string)loadedMarket["Name"];
-            //    bool isSelected = (bool)loadedMarket["IsSelected"];
-
-            //    loadedList.Add(new Market(name, isSelected));
-            //}
-
-            //string loadedEmail, loadedPath;
-            //if (data["Email"] != null)
-            //{
-            //    loadedEmail = (string)data["Email"];
-            //}
-
-            //if (data["Path"] != null)
-            //{
-            //    loadedPath = (string)data["Path"];
-            //}
-
-            ////string e = (string)loadedemail["Email"];
-
-            //var a = 1;
-
-
         }
-
-        
     }
 }
