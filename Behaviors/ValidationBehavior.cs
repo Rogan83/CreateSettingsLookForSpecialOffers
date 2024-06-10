@@ -9,17 +9,7 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
 {
     public  class ValidationBehavior : Behavior<Entry>
     {
-        //public static readonly BindableProperty PatternProperty =
-        //BindableProperty.Create(nameof(Pattern), typeof(string), typeof(ValidationBehavior), default(string));
-
-        //public string Pattern
-        //{
-        //    get => (string)GetValue(PatternProperty);
-        //    set => SetValue(PatternProperty, value);
-        //}
         public string Pattern { get; set; }
-
-
 
         protected override void OnAttachedTo(Entry entry)
         {
@@ -36,10 +26,7 @@ namespace CreateSettingsLookForSpecialOffers.Behaviors
         private void Bindable_TextChanged(object sender, TextChangedEventArgs e)
         {
             string emailPattern = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+";
-            //string pathPattern = @"^([a-zA-Z]):[\\\/]((?:[^<>:""\\\/\|\?\*]+[\\\/])*)([^<>:""\\\/\|\?\*]+)\.([^<>:""\\\/\|\?\*\s]+)$";
-            //string pattern = @"\w+@\w+\.(de|com)";
-
-            //Pattern = emailPattern;
+           
             if (Pattern == null) { return; }
 
             Regex regex = new Regex(Pattern);
